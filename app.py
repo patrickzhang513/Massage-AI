@@ -10,7 +10,7 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# --- 2. 视觉系统：V14 (用户定制版：400%按钮 + 字体修复) ---
+# --- 2. 视觉系统：V14 (用户定制版：400%按钮 + 字体修复 + 标题统一) ---
 st.markdown("""
     <style>
     /* ============================
@@ -28,18 +28,22 @@ st.markdown("""
     }
 
     /* ============================
-       3. 标题与标签 (拆分版)
+       3. 标题与标签 (统一控制版)
        ============================ */
     
-    /* (A) 这里的代码只控制：输入框上方的标题 (如：客户姓名、电子邮箱...) */
-    .stTextInput label, .stSelectbox label, .stMultiSelect label, 
-    .stTextArea label, .stCheckbox label, 
-    div[data-testid="stSlider"] label { 
+    /* (A) 这里的代码控制：所有输入框、下拉菜单、以及滑块(Slider)的小标题 */
+    .stTextInput label, 
+    .stSelectbox label, 
+    .stMultiSelect label, 
+    .stTextArea label, 
+    .stCheckbox label, 
+    div[data-testid="stSlider"] label,
+    div[data-testid="stSlider"] p {  /* <--- 新增：包含了滑块的文字标题 */
         color: #2c1e1c !important;
         font-family: 'Noto Sans SC', sans-serif !important;
         font-weight: 700 !important;
         
-        /* 👇 修改这里：调整栏位标题的大小 */
+        /* 👇 修改这里：现在可以统一调整所有小标题(包括疼痛等级/久坐时长)的大小 */
         font-size: 25px !important;  
     }
 
@@ -112,17 +116,14 @@ st.markdown("""
         box-shadow: 0 0 0 1px #9e2a2b !important;
     }
 
-    /* 4. 滑块 (Slider) */
+    /* 4. 滑块 (Slider) 本体样式 */
+    /* 注意：标题样式已移至上方第3部分，此处只控制滑块颜色 */
     div[data-testid="stSlider"] div[data-testid="stThumbValue"] {
         background-color: #9e2a2b !important; 
     }
     div[data-testid="stSlider"] div[role="slider"] {
         background-color: #9e2a2b !important;
         box-shadow: 0 0 5px rgba(0,0,0,0.2) !important;
-    }
-    div[data-testid="stSlider"] div[data-testid="stMarkdownContainer"] p {
-        color: #2c1e1c !important;
-        font-size: 25px !important;
     }
 
     /* 5. 勾选框文字 */
@@ -383,10 +384,3 @@ else:
     with col_reset_M:
         if st.button(t['btn_new'], type="primary"):
             reset_app()
-
-
-
-
-
-
-
