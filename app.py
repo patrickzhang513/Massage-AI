@@ -23,41 +23,46 @@ st.markdown("""
         font-family: 'Lato', sans-serif !important;
     }
 
-    /* 2. 统一所有标题 (包括输入框、下拉框、滑块、多选框) */
+    /* 2. 统一所有标题 (深褐色，保留您喜欢的质感) */
     .stTextInput label, .stSelectbox label, .stMultiSelect label, 
     .stTextArea label, .stCheckbox label, 
-    /* 特别修复：滑块的标题 */
     div[data-testid="stSlider"] label,
     div[data-testid="stSlider"] p {
-        color: #2c1e1c !important; /* 深褐色，比纯黑更有质感 */
-        font-size: 1.5rem !important; /* 24px */
+        color: #2c1e1c !important; 
+        font-size: 1.5rem !important; 
         font-weight: 700 !important;
         margin-bottom: 10px !important;
         line-height: 1.5 !important;
         font-family: 'Lato', sans-serif !important;
     }
 
-    /* 3. 深度修复输入框 (多选框变黑、白色长方形问题) */
+    /* 3. 核心修复：输入框/下拉框 (防消失、防变黑) */
     
-    /* 强制所有输入容器背景为白 */
+    /* (A) 强制所有输入框容器变成 纯白 + 灰边框 */
+    input, textarea, 
     .stMultiSelect div[data-baseweb="select"], 
-    .stSelectbox div[data-baseweb="select"],
-    div[data-baseweb="input"] {
+    .stSelectbox div[data-baseweb="select"] {
         background-color: #ffffff !important;
-        border-radius: 6px !important;
         border: 2px solid #d1d1d1 !important;
-        color: #333 !important;
+        border-radius: 6px !important;
+        color: #333333 !important;
     }
-    
-    /* 消除内部的"深色"和"白色长方形" */
+
+    /* (B) 关键修改：不再使用 transparent，而是强制白色，并撑开高度 */
     .stMultiSelect div[data-baseweb="select"] > div,
     .stSelectbox div[data-baseweb="select"] > div {
-        background-color: transparent !important; /* 让它透出外面的白色 */
-        border: none !important;
-        color: #333 !important;
+        background-color: #ffffff !important; /* 改回白色 */
+        min-height: 45px !important; /* 强制高度，防止塌陷 */
+        color: #333333 !important;
     }
     
-    /* 修复选项标签的颜色 (选中的药丸) */
+    /* (C) 强制 Name/Email 在浏览器自动填充时也保持白色 */
+    input:-webkit-autofill, textarea:-webkit-autofill {
+        -webkit-box-shadow: 0 0 0 1000px #ffffff inset !important;
+        -webkit-text-fill-color: #333333 !important;
+    }
+
+    /* 修复选项标签 (Tags) */
     .stMultiSelect div[data-baseweb="tag"] {
         background-color: #f0f0f0 !important;
         border: 1px solid #ccc !important;
@@ -69,43 +74,38 @@ st.markdown("""
     /* 聚焦时变红 */
     .stMultiSelect div[data-baseweb="select"]:focus-within,
     .stSelectbox div[data-baseweb="select"]:focus-within,
-    div[data-baseweb="input"]:focus-within {
+    input:focus, textarea:focus {
         border-color: #9e2a2b !important;
         box-shadow: 0 0 0 1px #9e2a2b !important;
     }
 
-    /* 4. 滑块 (Slider) 颜色与样式修复 */
-    
-    /* 滑块轨道 - 已填充部分 (左边) */
+    /* 4. 滑块 (Slider) */
     div[data-testid="stSlider"] div[data-testid="stThumbValue"] {
-        background-color: #9e2a2b !important; /* 鲜艳品牌红 */
+        background-color: #9e2a2b !important; 
     }
-    /* 滑块本身 (圆点) */
     div[data-testid="stSlider"] div[role="slider"] {
         background-color: #9e2a2b !important;
         box-shadow: 0 0 5px rgba(0,0,0,0.2) !important;
     }
-    /* 滑块下方的数字 */
     div[data-testid="stSlider"] div[data-testid="stMarkdownContainer"] p {
-        color: #9e2a2b !important;
+        color: #9e2a2b !important; /* 这里必须保留，否则滑块数字会看不清 */
         font-size: 1.2rem !important;
     }
 
-    /* 5. 修复勾选框 (文字消失问题) */
+    /* 5. 勾选框文字 */
     .stCheckbox label p {
-        color: #333333 !important; /* 强制深黑 */
+        color: #333333 !important;
         font-size: 1.2rem !important;
         font-weight: 700 !important;
-        display: inline !important; /* 防止折叠 */
     }
 
-    /* 6. 送出按钮 (Submit) - 巨型红块 */
+    /* 6. 送出按钮 (保留您的巨型设计) */
     div.stFormSubmitButton > button {
         background-color: #9e2a2b !important;
         color: white !important;
         border: none !important;
         width: 100% !important; 
-        height: 150px !important; /* 150px 巨型高度 */
+        height: 150px !important; 
         font-size: 32px !important;
         font-family: 'Lato', sans-serif !important;
         font-weight: 800 !important;
@@ -113,21 +113,18 @@ st.markdown("""
         text-transform: uppercase;
         border-radius: 8px !important;
         margin-top: 20px !important;
-        box-shadow: none !important; /* 去除白边阴影 */
     }
     div.stFormSubmitButton > button:hover {
         background-color: #7f1d1d !important;
     }
 
-    /* 7. 语言切换按钮 (右上角) */
+    /* 7. 辅助样式 */
     div.stButton > button {
         background: transparent !important;
         border: none !important;
         color: #666 !important;
         text-decoration: underline;
     }
-
-    /* 隐私小字 */
     .privacy-text {
         font-size: 1rem;
         color: #666;
@@ -347,3 +344,4 @@ else:
     with col_reset_M:
         if st.button(t['btn_new'], type="primary"):
             reset_app()
+
