@@ -10,17 +10,14 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# --- 2. 视觉系统：V15 (修复滑块标题大小，使其与客户姓名完全一致) ---
+# --- 2. 视觉系统：V16 (终极修复：强制统一所有标签大小) ---
 st.markdown("""
     <style>
     /* ============================
-       1. 修改字体 (Font)
+       1. 全局字体与颜色
        ============================ */
     @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700&display=swap');
 
-    /* ============================
-       2. 全局颜色配置
-       ============================ */
     .stApp {
         background-color: #fdfbf7 !important;
         color: #333333 !important;
@@ -28,101 +25,67 @@ st.markdown("""
     }
 
     /* ============================
-       3. 标题与标签 (精准统一版)
+       2. 万能标题控制区 (Master Label Control)
        ============================ */
     
-    /* (A) 【核心修改区】
-       这里控制：客户姓名、邮箱、下拉菜单，以及最重要的【滑块标题】(疼痛等级/久坐时长) 
-       我们要确保它们看起来一模一样。
+    /* 👇 这里是核心修改！
+       无论它是输入框、滑块、还是勾选框，都会强制执行这里的字号。
     */
-    .stTextInput label,          /* 文本输入框 (姓名/邮箱) */
-    .stSelectbox label,          /* 下拉菜单 */
-    .stMultiSelect label,        /* 多选框 */
-    .stTextArea label,           /* 文本域 (备注) */
-    .stCheckbox label p,         /* 勾选框文字 */
-    div[data-testid="stSlider"] label,                      /* 滑块标签类型1 */
-    div[data-testid="stSlider"] div[data-testid="stWidgetLabel"] p, /* 滑块标签类型2 (关键修复) */
-    div[data-testid="stSlider"] div[data-testid="stWidgetLabel"]    /* 滑块标签容器 */
+    .stTextInput label p,              /* 文本输入框 (姓名/邮箱) */
+    .stSelectbox label p,              /* 下拉菜单 */
+    .stMultiSelect label p,            /* 多选框 */
+    .stTextArea label p,               /* 文本域 (备注) */
+    .stCheckbox label p,               /* 勾选框 (确认信息) */
+    div[data-testid="stSlider"] label p,            /* 滑块标签 (关键修复) */
+    div[data-testid="stWidgetLabel"] p,             /* 万能兜底 (防止漏网之鱼) */
+    label[data-testid="stWidgetLabel"] p            /* 另一种结构的兜底 */
     {  
         color: #2c1e1c !important;
         font-family: 'Noto Sans SC', sans-serif !important;
         font-weight: 700 !important;
         
-        /* 👇 这里统一控制所有小标题的大小 (包括疼痛等级) */
-        font-size: 35px !important;  
-        line-height: 1.5 !important;
+        /* 👇👇👇 在这里调整大小，所有标题会一起变！ 👇👇👇 */
+        font-size: 25px !important;  
+        /* 👆👆👆 觉得太大就改 20px，觉得太小就改 30px */
+        
+        line-height: 1.4 !important;
+        margin-bottom: 5px !important;
     }
 
-    /* (B) 这里的代码只控制：页面大标题 (如：### Client Intake Form) */
+    /* ============================
+       3. 页面大标题 (Client Intake Form)
+       ============================ */
     h1, h2, h3, h4, h5, h6 {
         color: #2c1e1c !important;
         font-family: 'Noto Sans SC', sans-serif !important;
         font-weight: 700 !important;
-        
-        /* 👇 页面大标题的大小 */
         font-size: 40px !important; 
         margin-top: 10px !important;
         margin-bottom: 10px !important;
     }
 
-    /* === 核心修复 A：输入框样式 === */
-    input[type="text"],
-    input[type="email"],
-    textarea {
+    /* ============================
+       4. 组件本体样式 (输入框、按钮等)
+       ============================ */
+    
+    /* 输入框本体 */
+    input[type="text"], input[type="email"], textarea {
         background-color: #ffffff !important;
         color: #000000 !important;
         border: 1px solid #cccccc !important;
         border-radius: 4px !important;
         padding: 8px !important;
-    }
-    
-    ::placeholder {
-        color: #888888 !important;
-        opacity: 1 !important;
-    }
-    
-    input:focus, textarea:focus {
-        border-color: #4A90E2 !important;
-        outline: none !important;
-        box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2) !important;
+        font-size: 18px !important; /* 输入的内容字号 */
     }
 
-    /* === 核心修复 B：下拉菜单与多选框 === */
-    .stMultiSelect div[data-baseweb="select"], 
-    .stSelectbox div[data-baseweb="select"],
-    div[data-baseweb="input"] {
+    /* 下拉/多选框本体 */
+    div[data-baseweb="select"] > div {
         background-color: #ffffff !important;
-        border-radius: 6px !important;
         border: 2px solid #d1d1d1 !important;
         color: #333 !important;
     }
-    
-    .stMultiSelect div[data-baseweb="select"] > div,
-    .stSelectbox div[data-baseweb="select"] > div {
-        background-color: #ffffff !important; 
-        border: none !important;
-        color: #333 !important;
-        min-height: 45px !important;
-        display: flex !important;
-        align-items: center !important;
-    }
-    
-    .stMultiSelect div[data-baseweb="tag"] {
-        background-color: #f0f0f0 !important;
-        border: 1px solid #ccc !important;
-    }
-    .stMultiSelect div[data-baseweb="tag"] span {
-        color: #333 !important;
-    }
 
-    .stMultiSelect div[data-baseweb="select"]:focus-within,
-    .stSelectbox div[data-baseweb="select"]:focus-within,
-    div[data-baseweb="input"]:focus-within {
-        border-color: #9e2a2b !important;
-        box-shadow: 0 0 0 1px #9e2a2b !important;
-    }
-
-    /* 4. 滑块 (Slider) 本体样式 (颜色) */
+    /* 滑块颜色 */
     div[data-testid="stSlider"] div[data-testid="stThumbValue"] {
         background-color: #9e2a2b !important; 
     }
@@ -130,13 +93,15 @@ st.markdown("""
         background-color: #9e2a2b !important;
         box-shadow: 0 0 5px rgba(0,0,0,0.2) !important;
     }
-    /* 修复滑块下方刻度数值的大小，防止它也被标题样式影响变得过大 */
+    
+    /* 修复滑块下方的刻度数字 (防止它也变大) */
     div[data-testid="stSlider"] div[data-testid="stTickBar"] p {
-        font-size: 14px !important;
+        font-size: 14px !important; /* 保持刻度小一点 */
         font-weight: 400 !important;
+        color: #666 !important;
     }
 
-    /* 6. 送出按钮 (定制: 400% 宽度) */
+    /* 送出按钮 */
     div.stFormSubmitButton > button {
         background-color: #9e2a2b !important;
         color: white !important;
@@ -155,16 +120,18 @@ st.markdown("""
     div.stFormSubmitButton > button:hover {
         background-color: #7f1d1d !important;
     }
-
-    /* 7. 其他 */
+    
+    /* 语言切换按钮 */
     div.stButton > button {
         background: transparent !important;
         border: none !important;
         color: #666 !important;
         text-decoration: underline;
     }
+    
+    /* 隐私条款文字 */
     .privacy-text {
-        font-size: 1rem;
+        font-size: 16px !important;
         color: #666;
         margin-top: -5px;
         margin-bottom: 25px;
@@ -382,4 +349,5 @@ else:
     with col_reset_M:
         if st.button(t['btn_new'], type="primary"):
             reset_app()
+
 
