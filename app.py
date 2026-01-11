@@ -10,7 +10,7 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# --- 2. 视觉系统：V11 终极修正版 (平衡版) ---
+# --- 2. 视觉系统：V11 完美修复版 (修复小白条) ---
 st.markdown("""
     <style>
     /* 引入 Lato 字体 */
@@ -23,45 +23,43 @@ st.markdown("""
         font-family: 'Lato', sans-serif !important;
     }
 
-    /* 2. 统一所有标题 (深褐色，保留您喜欢的质感) */
+    /* 2. 统一所有标题 */
     .stTextInput label, .stSelectbox label, .stMultiSelect label, 
     .stTextArea label, .stCheckbox label, 
     div[data-testid="stSlider"] label,
     div[data-testid="stSlider"] p {
-        color: #2c1e1c !important; 
-        font-size: 1.5rem !important; 
+        color: #2c1e1c !important; /* 深褐色 */
+        font-size: 1.5rem !important; /* 24px */
         font-weight: 700 !important;
         margin-bottom: 10px !important;
         line-height: 1.5 !important;
         font-family: 'Lato', sans-serif !important;
     }
 
-    /* 3. 核心修复：输入框/下拉框 (防消失、防变黑) */
+    /* 3. 核心修复：输入框样式 */
     
-    /* (A) 强制所有输入框容器变成 纯白 + 灰边框 */
-    input, textarea, 
+    /* (A) 外层容器：白色背景 + 灰色边框 */
     .stMultiSelect div[data-baseweb="select"], 
-    .stSelectbox div[data-baseweb="select"] {
+    .stSelectbox div[data-baseweb="select"],
+    div[data-baseweb="input"] {
         background-color: #ffffff !important;
-        border: 2px solid #d1d1d1 !important;
         border-radius: 6px !important;
-        color: #333333 !important;
+        border: 2px solid #d1d1d1 !important;
+        color: #333 !important;
     }
-
-    /* (B) 关键修改：不再使用 transparent，而是强制白色，并撑开高度 */
+    
+    /* (B) 内层容器：⚠️ 关键修复点 ⚠️ */
+    /* 不再使用透明，而是强制纯白，并设定最小高度，撑开盒子 */
     .stMultiSelect div[data-baseweb="select"] > div,
     .stSelectbox div[data-baseweb="select"] > div {
-        background-color: #ffffff !important; /* 改回白色 */
-        min-height: 45px !important; /* 强制高度，防止塌陷 */
-        color: #333333 !important;
+        background-color: #ffffff !important; /* 强制纯白 */
+        border: none !important;
+        color: #333 !important;
+        min-height: 45px !important; /* 强制高度，防止压扁成小白条 */
+        display: flex !important;
+        align-items: center !important;
     }
     
-    /* (C) 强制 Name/Email 在浏览器自动填充时也保持白色 */
-    input:-webkit-autofill, textarea:-webkit-autofill {
-        -webkit-box-shadow: 0 0 0 1000px #ffffff inset !important;
-        -webkit-text-fill-color: #333333 !important;
-    }
-
     /* 修复选项标签 (Tags) */
     .stMultiSelect div[data-baseweb="tag"] {
         background-color: #f0f0f0 !important;
@@ -74,7 +72,7 @@ st.markdown("""
     /* 聚焦时变红 */
     .stMultiSelect div[data-baseweb="select"]:focus-within,
     .stSelectbox div[data-baseweb="select"]:focus-within,
-    input:focus, textarea:focus {
+    div[data-baseweb="input"]:focus-within {
         border-color: #9e2a2b !important;
         box-shadow: 0 0 0 1px #9e2a2b !important;
     }
@@ -88,18 +86,19 @@ st.markdown("""
         box-shadow: 0 0 5px rgba(0,0,0,0.2) !important;
     }
     div[data-testid="stSlider"] div[data-testid="stMarkdownContainer"] p {
-        color: #9e2a2b !important; /* 这里必须保留，否则滑块数字会看不清 */
+        color: #9e2a2b !important;
         font-size: 1.2rem !important;
     }
 
-    /* 5. 勾选框文字 */
+    /* 5. 修复勾选框文字 */
     .stCheckbox label p {
         color: #333333 !important;
         font-size: 1.2rem !important;
         font-weight: 700 !important;
+        display: inline !important;
     }
 
-    /* 6. 送出按钮 (保留您的巨型设计) */
+    /* 6. 送出按钮 (巨型) */
     div.stFormSubmitButton > button {
         background-color: #9e2a2b !important;
         color: white !important;
@@ -113,12 +112,13 @@ st.markdown("""
         text-transform: uppercase;
         border-radius: 8px !important;
         margin-top: 20px !important;
+        box-shadow: none !important;
     }
     div.stFormSubmitButton > button:hover {
         background-color: #7f1d1d !important;
     }
 
-    /* 7. 辅助样式 */
+    /* 7. 其他 */
     div.stButton > button {
         background: transparent !important;
         border: none !important;
@@ -238,7 +238,7 @@ with col_btn:
     st.markdown("</div>", unsafe_allow_html=True)
 
 st.markdown(f"### {t['title']}")
-st.markdown(f"<p style='color:#666; font-size:1.1rem; margin-top:-15px;'>{t['subtitle']}</p>", unsafe_allow_html=True)
+st.markdown(f"<p style='margin-top:-15px;'>{t['subtitle']}</p>", unsafe_allow_html=True)
 
 # --- 表单逻辑 ---
 
@@ -344,4 +344,3 @@ else:
     with col_reset_M:
         if st.button(t['btn_new'], type="primary"):
             reset_app()
-
