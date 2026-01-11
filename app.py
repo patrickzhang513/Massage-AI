@@ -44,7 +44,7 @@ st.markdown("""
         font-weight: 700 !important;
         
         /* 👇 修改这里：现在可以统一调整所有小标题(包括疼痛等级/久坐时长)的大小 */
-        font-size: 25px !important;  
+        font-size: 35px !important;  
     }
 
     /* (B) 这里的代码只控制：页面大标题 (如：### Client Intake Form) */
@@ -384,3 +384,4 @@ else:
     with col_reset_M:
         if st.button(t['btn_new'], type="primary"):
             reset_app()
+
