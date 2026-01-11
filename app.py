@@ -10,129 +10,129 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# --- 2. 视觉系统：V12 终极强力修正版 (Bold & Big) ---
+# --- 2. 视觉系统：V11 终极修正版 (平衡版) ---
 st.markdown("""
     <style>
     /* 引入 Lato 字体 */
-    @import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap');
 
-    /* 1. 全局强制设置：背景米色，所有文字黑色且加粗 */
+    /* 1. 全局配置 */
     .stApp {
         background-color: #fdfbf7 !important;
+        color: #333333 !important;
         font-family: 'Lato', sans-serif !important;
     }
-    
-    /* 暴力强制所有文本颜色为黑，且加粗 */
-    .stApp, p, label, span, div, li {
-        color: #000000 !important;
-        font-weight: 700 !important; /* 全局加粗 */
-    }
 
-    /* 2. 标题特大化 (加大号 +1) */
+    /* 2. 统一所有标题 (包括输入框、下拉框、滑块、多选框) */
     .stTextInput label, .stSelectbox label, .stMultiSelect label, 
     .stTextArea label, .stCheckbox label, 
+    /* 特别修复：滑块的标题 */
     div[data-testid="stSlider"] label,
     div[data-testid="stSlider"] p {
-        color: #000000 !important; /* 强制黑色，不再是褐色 */
-        font-size: 1.7rem !important; /* 约 27px - 特大 */
-        font-weight: 900 !important; /* 特粗 */
-        margin-bottom: 12px !important;
-        line-height: 1.4 !important;
+        color: #2c1e1c !important; /* 深褐色，比纯黑更有质感 */
+        font-size: 1.5rem !important; /* 24px */
+        font-weight: 700 !important;
+        margin-bottom: 10px !important;
+        line-height: 1.5 !important;
+        font-family: 'Lato', sans-serif !important;
     }
 
-    /* 3. 输入框/选择框/备注栏 - 彻底修复深色背景问题 */
+    /* 3. 深度修复输入框 (多选框变黑、白色长方形问题) */
     
-    /* 针对 textarea (备注栏) */
-    textarea {
+    /* 强制所有输入容器背景为白 */
+    .stMultiSelect div[data-baseweb="select"], 
+    .stSelectbox div[data-baseweb="select"],
+    div[data-baseweb="input"] {
         background-color: #ffffff !important;
-        color: #000000 !important;
-        font-weight: 700 !important;
-        font-size: 1.3rem !important; /* 内容字体加大 */
-        border: 2px solid #000000 !important; /* 边框改黑，更清晰 */
-    }
-    
-    /* 针对 input (单行输入) */
-    input {
-        background-color: #ffffff !important;
-        color: #000000 !important;
-        font-weight: 700 !important;
-        font-size: 1.3rem !important;
-        border: 2px solid #000000 !important;
-    }
-
-    /* 针对 Selectbox 和 Multiselect (最难搞的深色块修复) */
-    div[data-baseweb="select"] > div {
-        background-color: #ffffff !important;
-        color: #000000 !important;
-        border: 2px solid #000000 !important;
         border-radius: 6px !important;
+        border: 2px solid #d1d1d1 !important;
+        color: #333 !important;
     }
     
-    /* 修复多选框里的"小药丸" (Tags) */
-    div[data-baseweb="tag"] {
-        background-color: #e0e0e0 !important;
-    }
-    div[data-baseweb="tag"] span {
-        color: #000000 !important;
+    /* 消除内部的"深色"和"白色长方形" */
+    .stMultiSelect div[data-baseweb="select"] > div,
+    .stSelectbox div[data-baseweb="select"] > div {
+        background-color: transparent !important; /* 让它透出外面的白色 */
+        border: none !important;
+        color: #333 !important;
     }
     
-    /* 消除下拉框里的任何白色长方形阴影 */
-    div[data-baseweb="select"] {
-        background-color: transparent !important;
+    /* 修复选项标签的颜色 (选中的药丸) */
+    .stMultiSelect div[data-baseweb="tag"] {
+        background-color: #f0f0f0 !important;
+        border: 1px solid #ccc !important;
+    }
+    .stMultiSelect div[data-baseweb="tag"] span {
+        color: #333 !important;
     }
 
-    /* 4. 滑块 (Slider) - 标题黑，轨道红 */
-    
-    /* 轨道左边 (已选) */
-    div[data-testid="stSlider"] div[data-testid="stThumbValue"] {
-        background-color: #9e2a2b !important; 
+    /* 聚焦时变红 */
+    .stMultiSelect div[data-baseweb="select"]:focus-within,
+    .stSelectbox div[data-baseweb="select"]:focus-within,
+    div[data-baseweb="input"]:focus-within {
+        border-color: #9e2a2b !important;
+        box-shadow: 0 0 0 1px #9e2a2b !important;
     }
-    /* 滑块圆点 */
+
+    /* 4. 滑块 (Slider) 颜色与样式修复 */
+    
+    /* 滑块轨道 - 已填充部分 (左边) */
+    div[data-testid="stSlider"] div[data-testid="stThumbValue"] {
+        background-color: #9e2a2b !important; /* 鲜艳品牌红 */
+    }
+    /* 滑块本身 (圆点) */
     div[data-testid="stSlider"] div[role="slider"] {
         background-color: #9e2a2b !important;
-        width: 28px !important; /* 圆点加大 */
-        height: 28px !important;
+        box-shadow: 0 0 5px rgba(0,0,0,0.2) !important;
     }
-    
-    /* 5. 最后的声明文字 (Checkbox) - 修复看不见的问题 */
-    div[data-testid="stCheckbox"] label p {
-        color: #000000 !important; /* 纯黑 */
-        font-size: 1.4rem !important; /* 加大 */
-        font-weight: 900 !important; /* 特粗 */
+    /* 滑块下方的数字 */
+    div[data-testid="stSlider"] div[data-testid="stMarkdownContainer"] p {
+        color: #9e2a2b !important;
+        font-size: 1.2rem !important;
     }
 
-    /* 6. 送出按钮 (Submit) - 保持巨型 */
+    /* 5. 修复勾选框 (文字消失问题) */
+    .stCheckbox label p {
+        color: #333333 !important; /* 强制深黑 */
+        font-size: 1.2rem !important;
+        font-weight: 700 !important;
+        display: inline !important; /* 防止折叠 */
+    }
+
+    /* 6. 送出按钮 (Submit) - 巨型红块 */
     div.stFormSubmitButton > button {
         background-color: #9e2a2b !important;
-        color: white !important; /* 只有按钮文字是白 */
+        color: white !important;
         border: none !important;
         width: 100% !important; 
-        height: 150px !important; 
-        font-size: 36px !important; /* 字体加大 */
-        font-weight: 900 !important; /* 特粗 */
+        height: 150px !important; /* 150px 巨型高度 */
+        font-size: 32px !important;
         font-family: 'Lato', sans-serif !important;
-        letter-spacing: 2px;
+        font-weight: 800 !important;
+        letter-spacing: 3px;
         text-transform: uppercase;
-        border-radius: 10px !important;
-        margin-top: 30px !important;
+        border-radius: 8px !important;
+        margin-top: 20px !important;
+        box-shadow: none !important; /* 去除白边阴影 */
     }
     div.stFormSubmitButton > button:hover {
         background-color: #7f1d1d !important;
     }
 
+    /* 7. 语言切换按钮 (右上角) */
+    div.stButton > button {
+        background: transparent !important;
+        border: none !important;
+        color: #666 !important;
+        text-decoration: underline;
+    }
+
     /* 隐私小字 */
     .privacy-text {
-        font-size: 1.1rem;
-        color: #000000 !important; /* 改黑 */
-        font-weight: 700 !important;
+        font-size: 1rem;
+        color: #666;
+        margin-top: -5px;
         margin-bottom: 25px;
-    }
-    
-    /* 语言切换按钮 */
-    div.stButton > button {
-        color: #000000 !important;
-        font-weight: 700 !important;
-        font-size: 1.1rem !important;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -241,7 +241,7 @@ with col_btn:
     st.markdown("</div>", unsafe_allow_html=True)
 
 st.markdown(f"### {t['title']}")
-st.markdown(f"<p style='margin-top:-15px;'>{t['subtitle']}</p>", unsafe_allow_html=True)
+st.markdown(f"<p style='color:#666; font-size:1.1rem; margin-top:-15px;'>{t['subtitle']}</p>", unsafe_allow_html=True)
 
 # --- 表单逻辑 ---
 
@@ -256,6 +256,7 @@ if not st.session_state.submitted:
         insurance = st.text_input(t['lbl_ins'])
         st.markdown(f"<p class='privacy-text'>{t['privacy']}</p>", unsafe_allow_html=True)
         
+        # 多选框：背景修复
         pain_area = st.multiselect(
             t['lbl_area'], 
             t['opt_area'], 
@@ -269,28 +270,30 @@ if not st.session_state.submitted:
         with col2:
             duration = st.selectbox(t['lbl_duration'], t['opt_dur'], index=None, placeholder="")
         
+        # 多选框：背景修复
         pain_desc = st.multiselect(t['lbl_desc'], t['opt_desc'], placeholder="")
         
-        # 滑块：标题和数值现在会被 CSS 强制变黑
+        # 滑块：颜色与标题修复
         pain_level = st.slider(t['lbl_level'], 0, 10, 5)
         
         col3, col4 = st.columns(2)
         with col3:
             activity = st.selectbox(t['lbl_job'], t['opt_job'], index=None, placeholder="")
         with col4:
+            # 滑块：颜色与标题修复
             sitting = st.select_slider(t['lbl_sit'], options=["<2h", "2-4h", "4-8h", "8h+"])
         
+        # 多选框：背景修复
         goals = st.multiselect(t['lbl_goal'], t['opt_goal'], placeholder="")
         
-        # 备注栏：背景已被强制修复为白色，字体黑色加粗
         notes = st.text_area(t['lbl_note'], height=150)
         
         st.markdown("<br>", unsafe_allow_html=True)
         
-        # 勾选框：字体颜色已被修复为黑色
+        # 勾选框：文字颜色修复
         consent = st.checkbox(t['lbl_consent'])
         
-        # 按钮：巨型 150px
+        # 按钮：150px 巨型
         submitted = st.form_submit_button(t['btn_submit'])
         
         if submitted:
@@ -335,7 +338,7 @@ else:
     st.markdown("""
     <div style="background-color:white; padding:30px; border-left:5px solid #9e2a2b; box-shadow:0 4px 10px rgba(0,0,0,0.05); border-radius: 6px;">
     """, unsafe_allow_html=True)
-    st.markdown(f"<div style='font-size: 1.3rem; line-height: 1.6; font-weight: 500;'>{st.session_state.ai_result}</div>", unsafe_allow_html=True)
+    st.markdown(f"<div style='font-size: 1.1rem; line-height: 1.6;'>{st.session_state.ai_result}</div>", unsafe_allow_html=True)
     st.markdown("</div>", unsafe_allow_html=True)
     
     st.markdown("<br>", unsafe_allow_html=True)
