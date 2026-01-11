@@ -1,6 +1,8 @@
 import streamlit as st
 import google.generativeai as genai
 from datetime import datetime
+import csv  # <--- 新增
+import os   # <--- 新增
 
 # --- 1. 页面配置 ---
 st.set_page_config(
@@ -151,6 +153,29 @@ def toggle_language():
 def reset_app():
     st.session_state.submitted = False
     st.rerun()
+# --- 保存数据的函数 (新增) ---
+def save_to_csv(data_dict):
+    file_name = "client_data.csv"
+    # 检查文件是否已存在
+    file_exists = os.path.isfile(file_name)
+    
+    # 定义 Excel 表头 (列名)
+    fieldnames = [
+        "Timestamp", "Name", "Email", "Insurance", 
+        "Pain_Area", "Pain_Side", "Pain_Level", 
+        "Duration", "Pain_Type", "Job", 
+        "Sitting_Hours", "Goals", "Notes", "AI_Report"
+    ]
+    
+    # 打开文件并写入 ('a' 代表 append 追加模式)
+    with open(file_name, mode='a', newline='', encoding='utf-8-sig') as f:
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        
+        # 如果是第一次创建文件，先写入表头
+        if not file_exists:
+            writer.writeheader()
+            
+        writer.writerow(data_dict)
 
 # --- 4. 词典 ---
 trans = {
@@ -349,5 +374,6 @@ else:
     with col_reset_M:
         if st.button(t['btn_new'], type="primary"):
             reset_app()
+
 
 
