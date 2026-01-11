@@ -10,104 +10,109 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# --- 2. 视觉系统：适老化设计 (Big & Clear) ---
+# --- 2. 视觉系统：极简医疗风 (Lato字体 + 大按钮) ---
 st.markdown("""
     <style>
     /* 引入 Lato 字体 */
     @import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap');
 
-    /* 1. 全局基础字号加大 */
-    .stApp {
+    /* 1. 全局字体统一 */
+    .stApp, button, input, textarea, select, div {
         background-color: #fdfbf7 !important; /* 护眼米色 */
         color: #333333 !important;
         font-family: 'Lato', sans-serif !important;
     }
     
-    /* 2. 问题标题 (Labels) - 超大清晰 */
+    /* 2. 标题样式 (加大、加粗、深褐) */
     .stTextInput label, .stSelectbox label, .stMultiSelect label, .stSlider label, .stRadio label, .stTextArea label, .stCheckbox label {
-        color: #2c1e1c !important; /* 深褐 */
-        font-size: 1.5rem !important; /* 24px - 非常大 */
+        color: #2c1e1c !important;
+        font-size: 1.5rem !important; /* 24px */
         font-weight: 700 !important;
-        margin-bottom: 10px !important;
-        line-height: 1.4 !important; /* 增加行高，不拥挤 */
+        margin-bottom: 8px !important;
+        line-height: 1.5 !important;
     }
     
-    /* 3. 输入框内部 & 选项文字 - 方便阅读 */
+    /* 3. 输入框内部样式 (干净、清晰) */
     input, textarea, .stSelectbox div, .stMultiSelect div, .stRadio div, p {
-        font-size: 1.2rem !important; /* 20px - 像手机老人模式 */
+        font-size: 1.2rem !important; /* 20px */
         color: #000000 !important;
     }
     
-    /* 4. 输入框本身 - 加高，好点 */
-    input, textarea {
+    /* 4. 输入框外框 (加高、加粗) */
+    input, textarea, .stSelectbox > div[data-baseweb="select"] > div {
         background-color: #ffffff !important;
-        border: 2px solid #d1d1d1 !important; /* 边框加粗 */
+        border: 2px solid #d1d1d1 !important;
         border-radius: 6px !important;
-        padding: 12px !important; /* 内边距加大 */
+        min-height: 50px !important; /* 增加高度，手指好点 */
+        padding: 5px !important;
     }
-    /* 聚焦变红 */
-    input:focus, textarea:focus {
+    /* 聚焦时变红 */
+    input:focus, textarea:focus, .stSelectbox > div[data-baseweb="select"] > div:focus-within {
         border-color: #9e2a2b !important;
     }
 
-    /* 5. 下拉菜单优化 */
-    div[data-baseweb="select"] > div {
+    /* 5. 下拉菜单弹窗优化 (去除杂色) */
+    ul[data-testid="stSelectboxVirtualDropdown"] {
         background-color: #ffffff !important;
-        border-color: #d1d1d1 !important;
-        padding: 8px !important;
+        border: 1px solid #d1d1d1 !important;
     }
     ul[data-testid="stSelectboxVirtualDropdown"] li {
-        font-size: 1.1rem !important; /* 下拉选项也加大 */
-        padding: 15px !important; /* 选项间距加大，防误触 */
+        font-size: 1.2rem !important;
+        padding: 15px !important; /* 选项间距大，防误触 */
+        color: #000000 !important;
     }
 
-    /* 6. 按钮设计 */
+    /* 6. 按钮系统 - 终极优化 */
     
-    /* 语言切换 (右上角) */
+    /* 语言切换 (右上角，保持低调) */
     div.stButton > button {
         font-size: 1rem !important;
         color: #666 !important;
         text-decoration: underline;
         background: transparent !important;
         border: none !important;
+        font-family: 'Lato', sans-serif !important;
     }
 
-    /* SUBMIT 按钮 (超大号) */
+    /* SUBMIT 按钮 (大横长方形) */
     div.stFormSubmitButton > button {
         background-color: #9e2a2b !important;
         color: white !important;
         border: none !important;
-        padding: 18px 0px !important; /* 按钮变高 */
-        width: 100% !important;
-        font-size: 24px !important; /* 字号特大 */
-        font-weight: 800 !important;
+        width: 100% !important; /* 横向填满 */
+        height: 80px !important; /* 高度设定为80px，约备注栏的一半 */
+        font-size: 26px !important; /* 字体超大 */
+        font-weight: 700 !important; /* 粗体，但不是特粗 */
+        font-family: 'Lato', sans-serif !important; /* 强制统一字体 */
         border-radius: 8px !important;
-        margin-top: 20px !important;
+        margin-top: 30px !important;
         text-transform: uppercase;
         letter-spacing: 2px;
+        line-height: 1 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
     }
     div.stFormSubmitButton > button:hover {
         background-color: #7f1d1d !important;
-        transform: scale(1.01); /* 鼠标放上去微微放大 */
-        transition: all 0.2s;
+    }
+    div.stFormSubmitButton > button:active {
+        transform: scale(0.98);
     }
 
-    /* 7. 隐私小字 (虽然小，但也要清晰) */
+    /* 7. 隐私小字 */
     .privacy-text {
-        font-size: 1rem; /* 16px */
-        color: #555;
+        font-size: 1rem;
+        color: #666;
         margin-top: -5px;
-        margin-bottom: 20px;
+        margin-bottom: 25px;
+        font-style: normal;
     }
     
-    /* 8. 修复滑块文字大小 */
-    .stSlider div[data-testid="stMarkdownContainer"] p {
-        font-size: 1.2rem !important;
-    }
-    
-    /* 9. 增加模块间距 */
-    div[data-testid="stForm"] > div {
-        gap: 1.5rem; /* 每个问题之间拉开距离 */
+    /* 8. 占位符颜色 (让“Select...”这种字淡一点) */
+    ::placeholder {
+        color: #999 !important;
+        opacity: 1;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -125,7 +130,7 @@ def reset_app():
     st.session_state.submitted = False
     st.rerun()
 
-# --- 4. 词典 (按钮简化为 SUBMIT) ---
+# --- 4. 词典 (新增保险栏位) ---
 trans = {
     'en': {
         'lang_btn': 'Switch to 中文',
@@ -133,6 +138,7 @@ trans = {
         'subtitle': 'Please fill out before treatment',
         'lbl_name': 'Client Name',
         'lbl_email': 'Email Address',
+        'lbl_ins': 'Private Health Fund (Optional)', # 新增
         'privacy': 'Your details are kept private and secure.',
         'lbl_area': 'Where is the pain?',
         'lbl_side': 'Which side?',
@@ -144,7 +150,7 @@ trans = {
         'lbl_goal': 'Goal for Today',
         'lbl_note': 'Medical History / Notes',
         'lbl_consent': 'I confirm the above is correct and consent to treatment.',
-        'btn_submit': 'SUBMIT', # 简化的大写
+        'btn_submit': 'SUBMIT', 
         'loading': 'Processing...',
         'success': 'Success',
         'result_title': 'Clinical Assessment Report',
@@ -155,7 +161,8 @@ trans = {
         'opt_dur': ["< 24 hours (New)", "1 week", "1 month", "> 3 months (Long term)"],
         'opt_desc': ["Sharp", "Dull/Aching", "Stiff", "Numb/Tingling", "Burning"],
         'opt_job': ["Desk Job", "Standing Job", "Physical Labor", "Athlete", "Retired"],
-        'opt_goal': ["Pain Relief", "Relaxation", "Better Sleep", "Deep Tissue Release"]
+        'opt_goal': ["Pain Relief", "Relaxation", "Better Sleep", "Deep Tissue Release"],
+        'ph_select': '' # 既然要干净，就留空
     },
     'zh': {
         'lang_btn': 'Switch to English',
@@ -163,6 +170,7 @@ trans = {
         'subtitle': '理疗前请填写',
         'lbl_name': '客户姓名',
         'lbl_email': '电子邮箱',
+        'lbl_ins': '私人医疗保险 (选填)', # 新增
         'privacy': '您的信息将被严格保密。',
         'lbl_area': '主要疼痛部位',
         'lbl_side': '侧别',
@@ -174,7 +182,7 @@ trans = {
         'lbl_goal': '今天治疗目标',
         'lbl_note': '病史 / 备注',
         'lbl_consent': '我确认信息属实并同意理疗。',
-        'btn_submit': '送出', # 中文保持送出
+        'btn_submit': '送出',
         'loading': '正在分析...',
         'success': '评估已生成',
         'result_title': 'AI 诊断报告',
@@ -185,7 +193,8 @@ trans = {
         'opt_dur': ["<24h (新伤)", "1wk (一周)", "1m (一月)", ">3m (长期)"],
         'opt_desc': ["Sharp (刺痛)", "Dull (酸痛)", "Stiff (僵硬)", "Numb (麻木)", "Burning (灼烧)"],
         'opt_job': ["Desk Job (办公)", "Standing (久站)", "Labor (体力)", "Athlete (运动)", "Retired (退休)"],
-        'opt_goal': ["Pain Relief (止痛)", "Relax (放松)", "Sleep (助眠)", "Tissue (松解)"]
+        'opt_goal': ["Pain Relief (止痛)", "Relax (放松)", "Sleep (助眠)", "Tissue (松解)"],
+        'ph_select': '' # 留空
     }
 }
 
@@ -222,40 +231,48 @@ st.markdown(f"<p style='color:#666; font-size:1.1rem; margin-top:-15px;'>{t['sub
 
 if not st.session_state.submitted:
     with st.form("main_form"):
+        # 第一部分：基础信息 (Name, Email, Insurance)
         col_basic1, col_basic2 = st.columns(2)
         with col_basic1:
             name = st.text_input(t['lbl_name'])
         with col_basic2:
             email = st.text_input(t['lbl_email'])
         
-        # 隐私字体稍微加大
+        # 新增：保险栏位 (单列一行，保持整洁)
+        insurance = st.text_input(t['lbl_ins'])
+
         st.markdown(f"<p class='privacy-text'>{t['privacy']}</p>", unsafe_allow_html=True)
         
-        pain_area = st.multiselect(t['lbl_area'], t['opt_area'])
+        # 第二部分：疼痛信息 (使用 index=None 让栏位默认空白)
+        pain_area = st.multiselect(t['lbl_area'], t['opt_area'], placeholder=t['ph_select'])
         
         col1, col2 = st.columns(2)
         with col1:
-            pain_side = st.selectbox(t['lbl_side'], t['opt_side'])
+            # index=None: 默认不选，保持空白干净
+            pain_side = st.selectbox(t['lbl_side'], t['opt_side'], index=None, placeholder=t['ph_select'])
         with col2:
-            duration = st.selectbox(t['lbl_duration'], t['opt_dur'])
+            duration = st.selectbox(t['lbl_duration'], t['opt_dur'], index=None, placeholder=t['ph_select'])
             
-        pain_desc = st.multiselect(t['lbl_desc'], t['opt_desc'])
+        pain_desc = st.multiselect(t['lbl_desc'], t['opt_desc'], placeholder=t['ph_select'])
         pain_level = st.slider(t['lbl_level'], 0, 10, 5)
         
+        # 第三部分：生活习惯
         col3, col4 = st.columns(2)
         with col3:
-            activity = st.selectbox(t['lbl_job'], t['opt_job'])
+            activity = st.selectbox(t['lbl_job'], t['opt_job'], index=None, placeholder=t['ph_select'])
         with col4:
             sitting = st.select_slider(t['lbl_sit'], options=["<2h", "2-4h", "4-8h", "8h+"])
         
-        goals = st.multiselect(t['lbl_goal'], t['opt_goal'])
-        notes = st.text_area(t['lbl_note'], height=100) # 备注框也加高
+        goals = st.multiselect(t['lbl_goal'], t['opt_goal'], placeholder=t['ph_select'])
         
-        st.markdown("<br>", unsafe_allow_html=True) # 增加按钮上方间距
+        # 备注框 (高度约 150px)
+        notes = st.text_area(t['lbl_note'], height=150)
+        
+        st.markdown("<br>", unsafe_allow_html=True)
         
         consent = st.checkbox(t['lbl_consent'])
         
-        # 大写的 SUBMIT
+        # 提交按钮 (CSS 已定义为 80px 高度，约为上面 150px 备注框的一半)
         submitted = st.form_submit_button(t['btn_submit'])
         
         if submitted:
@@ -267,6 +284,7 @@ if not st.session_state.submitted:
                 with st.spinner(t['loading']):
                     client_data = f"""
                     Name: {name} | Email: {email}
+                    Insurance: {insurance}
                     Pain: {', '.join(pain_area)} ({pain_side})
                     Level: {pain_level}/10 | Type: {', '.join(pain_desc)}
                     History: {duration}
@@ -281,7 +299,7 @@ if not st.session_state.submitted:
                     Data: {client_data}
                     Output: Professional, NO EMOJI, Bilingual Report.
                     Structure:
-                    1. [Admin Summary] (English) - Risk & Session Rec (60/90min).
+                    1. [Admin Summary] (English) - Risk & Session Rec (60/90min). Mention Insurance if present.
                     2. [Client Report] (Bilingual English/Chinese) - Anatomy & Plan.
                     """
                     
@@ -302,7 +320,6 @@ else:
     <div style="background-color:white; padding:30px; border-left:5px solid #9e2a2b; box-shadow:0 4px 10px rgba(0,0,0,0.05); border-radius: 6px;">
     """, unsafe_allow_html=True)
     
-    # 结果字体也调大，方便阅读
     st.markdown(f"<div style='font-size: 1.1rem; line-height: 1.6;'>{st.session_state.ai_result}</div>", unsafe_allow_html=True)
     st.markdown("</div>", unsafe_allow_html=True)
     
