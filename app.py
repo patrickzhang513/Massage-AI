@@ -12,32 +12,31 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# --- 2. 视觉系统 ---
+# --- 2. 视觉系统：保留你的 600% 审美并修正偏移 ---
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700&display=swap');
     .stApp { background-color: #fdfbf7 !important; color: #333333 !important; font-family: 'Noto Sans SC', sans-serif !important; }
+    
+    /* 统一标题字号 25px */
     .stTextInput label p, .stSelectbox label p, .stMultiSelect label p, .stTextArea label p, .stCheckbox label p, 
-    div[data-testid="stSlider"] label p, div[data-testid="stWidgetLabel"] p {
+    div[data-testid="stSlider"] label p, div[data-testid="stWidgetLabel"] p, div[data-testid="stMarkdownContainer"] p {
         color: #2c1e1c !important; font-weight: 700 !important; font-size: 25px !important; line-height: 1.4 !important;
     }
-    h1 { font-size: 40px !important; color: #2c1e1c !important; }
+
+    /* 你的 600% 巨型按钮及其居中补丁 */
     div.stFormSubmitButton > button {
-        background-color: #9e2a2b !important; color: white !important; width: 600% !important;   
-        height: 150px !important; font-size: 50px !important; font-weight: 800 !important;
+        background-color: #9e2a2b !important; color: white !important; 
+        width: 600% !important; height: 150px !important; 
+        font-size: 50px !important; font-weight: 800 !important;
         position: relative !important; left: 50% !important; transform: translateX(-50%) !important;
-        border-radius: 12px !important;
+        border-radius: 12px !important; margin-top: 20px !important;
     }
+    div.stFormSubmitButton > button:hover { background-color: #7f1d1d !important; }
     </style>
 """, unsafe_allow_html=True)
 
-# --- 3. 状态管理与功能函数 ---
-if 'language' not in st.session_state: st.session_state.language = 'en'
-if 'submitted' not in st.session_state: st.session_state.submitted = False
-
-def toggle_language():
-    st.session_state.language = 'zh' if st.session_state.language == 'en' else 'en'
-
+# --- 3. 核心功能函数 ---
 def save_to_csv(data_dict):
     file_name = "client_data.csv"
     file_exists = os.path.isfile(file_name)
@@ -47,42 +46,46 @@ def save_to_csv(data_dict):
         if not file_exists: writer.writeheader()
         writer.writerow(data_dict)
 
-# --- 4. 语言词典 ---
+# --- 4. 状态管理与词典 ---
+if 'language' not in st.session_state: st.session_state.language = 'en'
+if 'submitted' not in st.session_state: st.session_state.submitted = False
+
+def toggle_language():
+    st.session_state.language = 'zh' if st.session_state.language == 'en' else 'en'
+
 trans = {
     'en': {
-        'lang_btn': 'Switch to 中文', 'title': 'Client Intake Form', 'lbl_name': 'Client Name', 'lbl_email': 'Email Address',
-        'lbl_ins': 'Private Health Fund', 'privacy': 'Private & Secure.', 'lbl_area': 'Pain Area', 'lbl_side': 'Which side?',
-        'lbl_duration': 'How long?', 'lbl_desc': 'Sensation', 'lbl_level': 'Intensity (0-10)', 'lbl_job': 'Activity/Job',
-        'lbl_sit': 'Sitting Hours', 'lbl_goal': 'Goal', 'lbl_note': 'History/Notes', 'lbl_consent': 'I consent to treatment.',
-        'btn_submit': 'SUBMIT', 'loading': 'Processing...', 'success': 'Success', 'result_title': 'Assessment Report',
-        'btn_new': 'New Client', 'opt_area': ["Neck", "Shoulders", "Upper Back", "Lower Back", "Hips", "Legs"],
-        'opt_side': ["Both", "Left", "Right", "Center"], 'opt_dur': ["<24h", "1wk", "1m", ">3m"],
-        'opt_desc': ["Sharp", "Dull", "Stiff"], 'opt_job': ["Desk", "Standing", "Labor"], 'opt_goal': ["Relief", "Relax"]
+        'lang_btn': 'Switch to 中文', 'title': 'Client Intake Form', 'lbl_name': 'Client Name', 'lbl_email': 'Email',
+        'lbl_ins': 'Health Fund', 'privacy': 'Private & Secure.', 'lbl_area': 'Pain Area', 'lbl_side': 'Side',
+        'lbl_duration': 'Duration', 'lbl_desc': 'Sensation', 'lbl_level': 'Intensity (0-10)', 'lbl_job': 'Activity',
+        'lbl_sit': 'Sitting Hours', 'lbl_goal': 'Goal', 'lbl_note': 'History', 'lbl_consent': 'I consent to treatment.',
+        'btn_submit': 'SUBMIT', 'loading': 'Processing...', 'success': 'Success', 'btn_new': 'New Client',
+        'opt_area': ["Neck", "Shoulders", "Back", "Hips", "Legs"], 'opt_side': ["Both", "Left", "Right"],
+        'opt_dur': ["New", "1wk", "1m", "Long term"], 'opt_desc': ["Sharp", "Dull", "Stiff"],
+        'opt_job': ["Desk", "Standing", "Labor"], 'opt_goal': ["Relief", "Relax"]
     },
     'zh': {
-        'lang_btn': 'Switch to English', 'title': '客户健康评估表', 'lbl_name': '客户姓名', 'lbl_email': '邮箱',
-        'lbl_ins': '医疗保险', 'privacy': '信息保密。', 'lbl_area': '疼痛部位', 'lbl_side': '侧别',
-        'lbl_duration': '持续时间', 'lbl_desc': '疼痛感觉', 'lbl_level': '疼痛等级', 'lbl_job': '日常职业',
-        'lbl_sit': '久坐时长', 'lbl_goal': '治疗目标', 'lbl_note': '备注', 'lbl_consent': '我同意理疗。',
-        'btn_submit': '送出', 'loading': '分析中...', 'success': '评估完成', 'result_title': 'AI 报告',
-        'btn_new': '接待下一位', 'opt_area': ["颈", "肩", "上背", "下腰", "臀", "腿"],
-        'opt_side': ["双侧", "左侧", "右侧", "中间"], 'opt_dur': ["新伤", "一周", "一月", "长期"],
-        'opt_desc': ["刺痛", "酸痛", "僵硬"], 'opt_job': ["办公", "久站", "体力"], 'opt_goal': ["止痛", "放松"]
+        'lang_btn': 'Switch to English', 'title': '客户评估表', 'lbl_name': '姓名', 'lbl_email': '邮箱',
+        'lbl_ins': '医保', 'privacy': '保密。', 'lbl_area': '部位', 'lbl_side': '侧别',
+        'lbl_duration': '时长', 'lbl_desc': '感觉', 'lbl_level': '等级', 'lbl_job': '职业',
+        'lbl_sit': '久坐', 'lbl_goal': '目标', 'lbl_note': '备注', 'lbl_consent': '我同意。',
+        'btn_submit': '送出', 'loading': '分析中...', 'success': '完成', 'btn_new': '下一位',
+        'opt_area': ["颈", "肩", "背部", "臀部", "腿部"], 'opt_side': ["双侧", "左侧", "右侧"],
+        'opt_dur': ["新伤", "一周", "一月", "长期"], 'opt_desc': ["刺痛", "酸痛", "僵硬"],
+        'opt_job': ["办公", "久站", "体力"], 'opt_goal': ["止痛", "放松"]
     }
 }
 t = trans[st.session_state.language]
 
-# API 配置
+# API 配置 (已修正模型路径)
 try:
     genai.configure(api_key=st.secrets["GOOGLE_API_KEY"])
-    model = genai.GenerativeModel('gemini-pro')
+    model = genai.GenerativeModel('gemini-1.5-flash')
 except Exception as e:
     st.error(f"API Error: {e}"); st.stop()
 
 # --- 5. 界面布局 ---
-col_logo, col_btn = st.columns([5, 2])
-with col_btn:
-    if st.button(t['lang_btn']): toggle_language(); st.rerun()
+if st.button(t['lang_btn']): toggle_language(); st.rerun()
 
 if not st.session_state.submitted:
     with st.form("main_form"):
@@ -102,16 +105,11 @@ if not st.session_state.submitted:
         
         if st.form_submit_button(t['btn_submit']):
             if not consent: st.warning("Please consent.")
-            elif not name or not pain_area: st.warning("Required fields missing.")
+            elif not name or not pain_area: st.warning("Fields missing.")
             else:
                 with st.spinner(t['loading']):
                     try:
-                        # AI 生成内容
-                        prompt = f"Role: Massage AI. Data: Name {name}, Pain {pain_area}. Generate report."
-                        response = model.generate_content(prompt)
-                        ai_report = response.text
-                        
-                        # 保存到 CSV
+                        res = model.generate_content(f"Report for {name}, Pain: {pain_area}")
                         save_data = {
                             "Timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
                             "Name": name, "Email": email, "Insurance": insurance,
@@ -119,11 +117,10 @@ if not st.session_state.submitted:
                             "Pain_Level": pain_level, "Duration": duration,
                             "Pain_Type": ", ".join(pain_desc), "Job": activity,
                             "Sitting_Hours": sitting, "Goals": ", ".join(goals),
-                            "Notes": notes, "AI_Report": ai_report
+                            "Notes": notes, "AI_Report": res.text
                         }
                         save_to_csv(save_data)
-                        
-                        st.session_state.ai_result = ai_report
+                        st.session_state.ai_result = res.text
                         st.session_state.submitted = True
                         st.rerun()
                     except Exception as e: st.error(f"Error: {e}")
