@@ -10,7 +10,7 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# --- 2. 视觉系统：V11 完美修复版 (修复小白条) ---
+# --- 2. 视觉系统：V12 终极整合版 (修复小白条 + 修复输入框黑洞) ---
 st.markdown("""
     <style>
     /* 引入 Lato 字体 */
@@ -23,7 +23,63 @@ st.markdown("""
         font-family: 'Lato', sans-serif !important;
     }
 
-    /* 2. 统一所有标题 */
+    /* === 核心修复 A：强制输入框变白 (解决暗色模式黑洞) === */
+    input[type="text"],
+    input[type="email"],
+    textarea {
+        background-color: #ffffff !important; /* 背景变白 */
+        color: #000000 !important;            /* 文字变黑 */
+        border: 1px solid #cccccc !important; /* 灰色边框 */
+        border-radius: 4px !important;        /* 圆角 */
+        padding: 8px !important;
+    }
+    
+    /* 修改占位符提示文字颜色 */
+    ::placeholder {
+        color: #888888 !important;
+        opacity: 1 !important;
+    }
+    
+    /* 修复点击时的聚焦效果 */
+    input:focus, textarea:focus {
+        border-color: #4A90E2 !important;
+        outline: none !important;
+        box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2) !important;
+    }
+
+    /* === 核心修复 B：下拉菜单与多选框 (解决小白条) === */
+    
+    /* (1) 外层容器 */
+    .stMultiSelect div[data-baseweb="select"], 
+    .stSelectbox div[data-baseweb="select"],
+    div[data-baseweb="input"] {
+        background-color: #ffffff !important;
+        border-radius: 6px !important;
+        border: 2px solid #d1d1d1 !important;
+        color: #333 !important;
+    }
+    
+    /* (2) 内层容器：强制高度，防止压扁 */
+    .stMultiSelect div[data-baseweb="select"] > div,
+    .stSelectbox div[data-baseweb="select"] > div {
+        background-color: #ffffff !important; 
+        border: none !important;
+        color: #333 !important;
+        min-height: 45px !important; /* 关键：强制高度 */
+        display: flex !important;
+        align-items: center !important;
+    }
+    
+    /* (3) 修复多选框里的标签 (Tags) */
+    .stMultiSelect div[data-baseweb="tag"] {
+        background-color: #f0f0f0 !important;
+        border: 1px solid #ccc !important;
+    }
+    .stMultiSelect div[data-baseweb="tag"] span {
+        color: #333 !important;
+    }
+
+    /* 2. 统一所有标题样式 */
     .stTextInput label, .stSelectbox label, .stMultiSelect label, 
     .stTextArea label, .stCheckbox label, 
     div[data-testid="stSlider"] label,
@@ -34,39 +90,6 @@ st.markdown("""
         margin-bottom: 10px !important;
         line-height: 1.5 !important;
         font-family: 'Lato', sans-serif !important;
-    }
-
-    /* 3. 核心修复：输入框样式 */
-    
-    /* (A) 外层容器：白色背景 + 灰色边框 */
-    .stMultiSelect div[data-baseweb="select"], 
-    .stSelectbox div[data-baseweb="select"],
-    div[data-baseweb="input"] {
-        background-color: #ffffff !important;
-        border-radius: 6px !important;
-        border: 2px solid #d1d1d1 !important;
-        color: #333 !important;
-    }
-    
-    /* (B) 内层容器：⚠️ 关键修复点 ⚠️ */
-    /* 不再使用透明，而是强制纯白，并设定最小高度，撑开盒子 */
-    .stMultiSelect div[data-baseweb="select"] > div,
-    .stSelectbox div[data-baseweb="select"] > div {
-        background-color: #ffffff !important; /* 强制纯白 */
-        border: none !important;
-        color: #333 !important;
-        min-height: 45px !important; /* 强制高度，防止压扁成小白条 */
-        display: flex !important;
-        align-items: center !important;
-    }
-    
-    /* 修复选项标签 (Tags) */
-    .stMultiSelect div[data-baseweb="tag"] {
-        background-color: #f0f0f0 !important;
-        border: 1px solid #ccc !important;
-    }
-    .stMultiSelect div[data-baseweb="tag"] span {
-        color: #333 !important;
     }
 
     /* 聚焦时变红 */
@@ -218,8 +241,8 @@ try:
     api_key = st.secrets["GOOGLE_API_KEY"]
     genai.configure(api_key=api_key)
     model = genai.GenerativeModel('gemini-1.5-flash')
-except:
-    st.error("API Error")
+except Exception as e:
+    st.error(f"API Setup Error: {e}")
     st.stop()
 
 # --- 5. 界面布局 ---
@@ -253,7 +276,7 @@ if not st.session_state.submitted:
         insurance = st.text_input(t['lbl_ins'])
         st.markdown(f"<p class='privacy-text'>{t['privacy']}</p>", unsafe_allow_html=True)
         
-        # 多选框：背景修复
+        # 多选框
         pain_area = st.multiselect(
             t['lbl_area'], 
             t['opt_area'], 
@@ -267,30 +290,30 @@ if not st.session_state.submitted:
         with col2:
             duration = st.selectbox(t['lbl_duration'], t['opt_dur'], index=None, placeholder="")
         
-        # 多选框：背景修复
+        # 多选框
         pain_desc = st.multiselect(t['lbl_desc'], t['opt_desc'], placeholder="")
         
-        # 滑块：颜色与标题修复
+        # 滑块
         pain_level = st.slider(t['lbl_level'], 0, 10, 5)
         
         col3, col4 = st.columns(2)
         with col3:
             activity = st.selectbox(t['lbl_job'], t['opt_job'], index=None, placeholder="")
         with col4:
-            # 滑块：颜色与标题修复
+            # 滑块
             sitting = st.select_slider(t['lbl_sit'], options=["<2h", "2-4h", "4-8h", "8h+"])
         
-        # 多选框：背景修复
+        # 多选框
         goals = st.multiselect(t['lbl_goal'], t['opt_goal'], placeholder="")
         
         notes = st.text_area(t['lbl_note'], height=150)
         
         st.markdown("<br>", unsafe_allow_html=True)
         
-        # 勾选框：文字颜色修复
+        # 勾选框
         consent = st.checkbox(t['lbl_consent'])
         
-        # 按钮：150px 巨型
+        # 按钮
         submitted = st.form_submit_button(t['btn_submit'])
         
         if submitted:
