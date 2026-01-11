@@ -47,7 +47,7 @@ st.markdown("""
         font-weight: 700 !important;
         
         /* 👇👇👇 在这里调整大小，所有标题会一起变！ 👇👇👇 */
-        font-size: 25px !important;  
+        font-size: 22px !important;  
         /* 👆👆👆 觉得太大就改 20px，觉得太小就改 30px */
         
         line-height: 1.4 !important;
@@ -374,5 +374,6 @@ else:
     with col_reset_M:
         if st.button(t['btn_new'], type="primary"):
             reset_app()
+
 
 
