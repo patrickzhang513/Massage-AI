@@ -10,46 +10,59 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# --- 2. 视觉系统：V12 终极整合版 (修复小白条 + 修复输入框黑洞) ---
+# --- 2. 视觉系统：V14 (用户定制版：400%按钮 + 字体修复) ---
 st.markdown("""
     <style>
-    /* 引入 Lato 字体 */
-    @import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap');
+    /* ============================
+       1. 修改字体 (Font)
+       ============================ */
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700&display=swap');
 
-    /* 1. 全局配置 */
+    /* ============================
+       2. 全局颜色配置
+       ============================ */
     .stApp {
         background-color: #fdfbf7 !important;
         color: #333333 !important;
-        font-family: 'Lato', sans-serif !important;
+        font-family: 'Noto Sans SC', sans-serif !important;
     }
 
-    /* === 核心修复 A：强制输入框变白 (解决暗色模式黑洞) === */
+    /* ============================
+       3. 标题与标签颜色
+       ============================ */
+    .stTextInput label, .stSelectbox label, .stMultiSelect label, 
+    .stTextArea label, .stCheckbox label, 
+    div[data-testid="stSlider"] label,
+    div[data-testid="stSlider"] p,
+    h1, h2, h3, h4, h5, h6 { 
+        color: #2c1e1c !important;
+        font-family: 'Noto Sans SC', sans-serif !important;
+        font-weight: 700 !important;
+    }
+
+    /* === 核心修复 A：输入框样式 === */
     input[type="text"],
     input[type="email"],
     textarea {
-        background-color: #ffffff !important; /* 背景变白 */
-        color: #000000 !important;            /* 文字变黑 */
-        border: 1px solid #cccccc !important; /* 灰色边框 */
-        border-radius: 4px !important;        /* 圆角 */
+        background-color: #ffffff !important;
+        color: #000000 !important;
+        border: 1px solid #cccccc !important;
+        border-radius: 4px !important;
         padding: 8px !important;
     }
     
-    /* 修改占位符提示文字颜色 */
     ::placeholder {
         color: #888888 !important;
         opacity: 1 !important;
     }
     
-    /* 修复点击时的聚焦效果 */
     input:focus, textarea:focus {
         border-color: #4A90E2 !important;
         outline: none !important;
         box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2) !important;
     }
 
-    /* === 核心修复 B：下拉菜单与多选框 (解决小白条) === */
-    
-    /* (1) 外层容器 */
+    /* === 核心修复 B：下拉菜单与多选框 === */
     .stMultiSelect div[data-baseweb="select"], 
     .stSelectbox div[data-baseweb="select"],
     div[data-baseweb="input"] {
@@ -59,18 +72,16 @@ st.markdown("""
         color: #333 !important;
     }
     
-    /* (2) 内层容器：强制高度，防止压扁 */
     .stMultiSelect div[data-baseweb="select"] > div,
     .stSelectbox div[data-baseweb="select"] > div {
         background-color: #ffffff !important; 
         border: none !important;
         color: #333 !important;
-        min-height: 45px !important; /* 关键：强制高度 */
+        min-height: 45px !important;
         display: flex !important;
         align-items: center !important;
     }
     
-    /* (3) 修复多选框里的标签 (Tags) */
     .stMultiSelect div[data-baseweb="tag"] {
         background-color: #f0f0f0 !important;
         border: 1px solid #ccc !important;
@@ -79,20 +90,6 @@ st.markdown("""
         color: #333 !important;
     }
 
-    /* 2. 统一所有标题样式 */
-    .stTextInput label, .stSelectbox label, .stMultiSelect label, 
-    .stTextArea label, .stCheckbox label, 
-    div[data-testid="stSlider"] label,
-    div[data-testid="stSlider"] p {
-        color: #2c1e1c !important; /* 深褐色 */
-        font-size: 1.5rem !important; /* 24px */
-        font-weight: 700 !important;
-        margin-bottom: 10px !important;
-        line-height: 1.5 !important;
-        font-family: 'Lato', sans-serif !important;
-    }
-
-    /* 聚焦时变红 */
     .stMultiSelect div[data-baseweb="select"]:focus-within,
     .stSelectbox div[data-baseweb="select"]:focus-within,
     div[data-baseweb="input"]:focus-within {
@@ -113,7 +110,7 @@ st.markdown("""
         font-size: 1.2rem !important;
     }
 
-    /* 5. 修复勾选框文字 */
+    /* 5. 勾选框文字 */
     .stCheckbox label p {
         color: #333333 !important;
         font-size: 1.2rem !important;
@@ -121,15 +118,19 @@ st.markdown("""
         display: inline !important;
     }
 
-    /* 6. 送出按钮 (巨型) */
+    /* 6. 送出按钮 (定制: 400% 宽度) */
     div.stFormSubmitButton > button {
         background-color: #9e2a2b !important;
         color: white !important;
         border: none !important;
-        width: 400% !important; 
+        
+        /* --- 您的定制尺寸 --- */
+        width: 400% !important;   /* 维持您的要求 */
         height: 150px !important; 
+        /* ------------------ */
+        
         font-size: 32px !important;
-        font-family: 'Lato', sans-serif !important;
+        font-family: 'Noto Sans SC', sans-serif !important;
         font-weight: 800 !important;
         letter-spacing: 3px;
         text-transform: uppercase;
@@ -367,4 +368,3 @@ else:
     with col_reset_M:
         if st.button(t['btn_new'], type="primary"):
             reset_app()
-
