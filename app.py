@@ -49,7 +49,7 @@ st.markdown("""
         font-weight: 700 !important;
         
         /* 👇 这里统一控制所有小标题的大小 (包括疼痛等级) */
-        font-size: 25px !important;  
+        font-size: 35px !important;  
         line-height: 1.5 !important;
     }
 
@@ -382,3 +382,4 @@ else:
     with col_reset_M:
         if st.button(t['btn_new'], type="primary"):
             reset_app()
+
