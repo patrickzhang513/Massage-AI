@@ -2,69 +2,94 @@ import streamlit as st
 import google.generativeai as genai
 from datetime import datetime
 
-# --- 1. 页面配置 (适配移动端) ---
+# --- 1. 页面基础配置 ---
 st.set_page_config(
     page_title="Massage Philosophy Intake",
     page_icon="🌿",
-    layout="centered", # ⚠️ 关键改动：使用居中布局，手机/电脑通吃
+    layout="centered", # 居中布局，适配手机和电脑
     initial_sidebar_state="collapsed"
 )
 
-# --- 2. 强制修复字体颜色 (CSS黑科技) ---
-# 这段代码强制所有文字变黑，背景变米色，解决“看不见字”的问题
+# --- 2. 视觉优化 (CSS 魔法) ---
 st.markdown("""
     <style>
-    /* 1. 强制全局背景为米色，文字为黑色 */
+    /* 全局背景色 - 米白色 (护眼专业) */
     .stApp {
         background-color: #fcfbf9;
         color: #000000 !important;
     }
+
+    /* --- 字体层级调整 --- */
     
-    /* 2. 修复输入框标签 (Label) 看不见的问题 */
+    /* 1. 问题标题 (Label) - 放大、加粗 */
     .stTextInput label, .stSelectbox label, .stMultiSelect label, .stSlider label, .stRadio label, .stTextArea label {
-        color: #000000 !important; /* 强制纯黑 */
-        font-size: 1.1rem !important; /* 字体加大，方便手机看 */
-        font-weight: 600 !important;
+        color: #2c1e1c !important; /* 深褐色，比纯黑更有质感 */
+        font-size: 1.3rem !important; /* 约 21px，非常清晰 */
+        font-weight: 700 !important;
+        margin-bottom: 8px !important;
     }
     
-    /* 3. 修复输入框里面的文字颜色 */
-    input, textarea, .stSelectbox div[data-baseweb="select"] {
+    /* 2. 选项文字/正文 - 正常大小 */
+    .stRadio div, .stMultiSelect div, p, .stSelectbox div {
         color: #000000 !important;
+        font-size: 1rem !important; /* 16px */
+    }
+
+    /* --- 3. 彻底修复输入框背景色 (改为浅色) --- */
+    
+    /* 输入框本体 */
+    input, textarea {
         background-color: #ffffff !important;
+        color: #000000 !important;
         border: 1px solid #d0d0d0 !important;
     }
     
-    /* 4. 修复多选框/单选框的选项文字 */
-    .stRadio div, .stMultiSelect div {
+    /* 下拉菜单的选择框 */
+    div[data-baseweb="select"] > div {
+        background-color: #f0f2f6 !important; /* 浅灰色背景 */
+        color: #000000 !important;
+        border-color: #d0d0d0 !important;
+    }
+    
+    /* 下拉菜单弹出后的选项列表 (关键修复：防止深色干扰) */
+    ul[data-testid="stSelectboxVirtualDropdown"] {
+        background-color: #ffffff !important;
+    }
+    li[role="option"] {
         color: #000000 !important;
     }
-    p, span {
-        color: #333333 !important;
-    }
 
-    /* 5. 按钮样式优化 (易经红) */
-    div.stButton > button {
+    /* --- 4. 按钮样式优化 --- */
+    
+    /* 提交按钮 (大、红、醒目) */
+    div.stButton > button[kind="primary"] {
         background-color: #9e2a2b;
         color: white !important;
         border: none;
-        padding: 15px 30px; /* 加大按钮热区 */
-        width: 100%; /* 手机上按钮占满全宽 */
-        font-size: 18px !important;
+        padding: 15px 0px;
+        width: 100%;
+        font-size: 20px !important;
+        font-weight: bold !important;
         border-radius: 8px;
+        margin-top: 20px;
     }
-    div.stButton > button:hover {
+    div.stButton > button[kind="primary"]:hover {
         background-color: #7f1d1d;
-        color: white !important;
     }
-    
-    /* 6. 语言切换按钮 (右上角) */
-    [data-testid="stHeader"] {
-        background-color: rgba(0,0,0,0);
+
+    /* 语言切换按钮 (极小、透明、不抢戏) */
+    div.stButton > button[kind="secondary"] {
+        background-color: transparent;
+        color: #666666 !important;
+        border: 1px solid #ddd;
+        font-size: 12px !important;
+        padding: 2px 10px;
+        height: auto;
     }
     </style>
 """, unsafe_allow_html=True)
 
-# --- 3. 语言与状态管理 ---
+# --- 3. 语言状态管理 ---
 if 'language' not in st.session_state:
     st.session_state.language = 'en' # 默认英文
 
@@ -77,54 +102,44 @@ def toggle_language():
 # 词典
 trans = {
     'en': {
-        'btn_toggle': '🇨🇳 中文界面', 
+        'lang_btn': '中文', # 按钮上显示“去中文”
         'title': 'Client Intake Form',
-        'subtitle': 'Takes 2-3 mins to complete',
-        'sec_basic': '1. Basic Information',
-        'lbl_name': 'Your Name',
-        'lbl_email': 'Email Address',
-        'sec_pain': '2. Pain & Symptoms',
+        'subtitle': 'Estimated time: 2 mins',
+        'lbl_name': 'Client Name',
+        'lbl_email': 'Email',
         'lbl_area': 'Where is the pain?',
         'lbl_side': 'Which side?',
-        'lbl_duration': 'How long?',
-        'sec_char': '3. Details',
+        'lbl_duration': 'How long have you had this?',
         'lbl_desc': 'How does it feel?',
         'lbl_level': 'Pain Intensity (0-10)',
-        'sec_life': '4. Lifestyle',
-        'lbl_job': 'Daily Activity',
-        'lbl_sit': 'Sitting Hours',
-        'sec_goal': '5. Goal',
+        'lbl_job': 'Daily Activity / Job',
+        'lbl_sit': 'Sitting hours per day',
         'lbl_goal': 'Goal for today',
-        'lbl_note': 'Notes',
-        'btn_submit': 'Generate Assessment',
-        'err': '⚠️ Name and Pain Area are required.',
-        'loading': 'Analyzing...',
-        'success': 'Assessment Ready!'
+        'lbl_note': 'Any Notes?',
+        'btn_submit': 'Submit / 送出', # 您的要求
+        'loading': 'Sending data to AI system...',
+        'success': 'Successfully Submitted!',
+        'result_title': 'System Analysis Result'
     },
     'zh': {
-        'btn_toggle': '🇦🇺 English View',
+        'lang_btn': 'English', # 按钮上显示“Go English”
         'title': '客户健康评估表',
-        'subtitle': '填写约需 2-3 分钟',
-        'sec_basic': '1. 基础信息',
-        'lbl_name': '您的姓名',
+        'subtitle': '预计填写时间：2分钟',
+        'lbl_name': '客户姓名',
         'lbl_email': '电子邮箱',
-        'sec_pain': '2. 疼痛与症状',
-        'lbl_area': '哪里不舒服？',
-        'lbl_side': '左边还是右边？',
-        'lbl_duration': '痛了多久？',
-        'sec_char': '3. 疼痛细节',
-        'lbl_desc': '是什么样的痛感？',
+        'lbl_area': '主要疼痛部位',
+        'lbl_side': '疼痛侧别',
+        'lbl_duration': '持续时间',
+        'lbl_desc': '疼痛感描述',
         'lbl_level': '疼痛等级 (0-10)',
-        'sec_life': '4. 生活习惯',
-        'lbl_job': '日常活动类型',
+        'lbl_job': '日常活动/职业',
         'lbl_sit': '每天久坐时长',
-        'sec_goal': '5. 治疗目标',
-        'lbl_goal': '今天的目标',
+        'lbl_goal': '今天治疗的目标',
         'lbl_note': '补充说明',
-        'btn_submit': '生成评估报告',
-        'err': '⚠️ 请填写姓名和疼痛部位',
-        'loading': '正在生成分析...',
-        'success': '报告已生成！'
+        'btn_submit': 'Submit / 送出',
+        'loading': '正在上传至后台分析...',
+        'success': '提交成功！',
+        'result_title': '后台系统分析结果'
     }
 }
 
@@ -136,124 +151,126 @@ try:
     genai.configure(api_key=api_key)
     model = genai.GenerativeModel('gemini-1.5-flash')
 except:
-    st.error("API Key Missing")
+    st.error("后台 API 未连接")
     st.stop()
 
-# --- 4. 界面布局 (手机优先设计) ---
+# --- 4. 界面布局 ---
 
-# 顶部：Logo 和 语言切换
-col1, col2 = st.columns([3, 1])
-with col1:
+# 顶部：Logo (大) + 语言按钮 (小)
+col_logo, col_btn = st.columns([4, 1])
+with col_logo:
     try:
-        st.image("logo.png", width=150)
+        # width=300 放大Logo
+        st.image("logo.png", width=300)
     except:
-        st.write("## Massage Philosophy")
-with col2:
-    if st.button(t['btn_toggle']):
+        st.markdown("## Massage Philosophy")
+with col_btn:
+    # 这是一个小的次要按钮 (secondary)
+    if st.button(t['lang_btn'], kind="secondary"):
         toggle_language()
         st.rerun()
 
-st.write(f"### {t['title']}")
+st.markdown(f"### {t['title']}")
 st.caption(t['subtitle'])
 st.markdown("---")
 
-# 表单开始
-with st.form("mobile_intake_form"):
+# 表单区域
+with st.form("main_form"):
     
-    # Section 1
-    st.markdown(f"**{t['sec_basic']}**")
+    # 基础信息
     name = st.text_input(t['lbl_name'])
     email = st.text_input(t['lbl_email'])
     
-    st.markdown("---")
+    st.markdown("<br>", unsafe_allow_html=True) # 增加间距
     
-    # Section 2
-    st.markdown(f"**{t['sec_pain']}**")
+    # 疼痛详情
     pain_area = st.multiselect(
         t['lbl_area'],
         ["Neck (颈)", "Shoulders (肩)", "Upper Back (上背)", "Lower Back (下腰)", 
          "Hips (臀)", "Legs (腿)", "Knees (膝)", "Feet (足)", "Head (头)", "Arms (手)"]
     )
     
-    col_side, col_dur = st.columns(2)
-    with col_side:
+    col1, col2 = st.columns(2)
+    with col1:
         pain_side = st.selectbox(t['lbl_side'], ["Both (两侧)", "Left (左)", "Right (右)", "Center (中)"])
-    with col_dur:
+    with col2:
         duration = st.selectbox(t['lbl_duration'], ["<24h (新伤)", "1wk (一周)", "1m (一月)", ">3m (长期)"])
         
-    st.markdown("---")
-    
-    # Section 3
-    st.markdown(f"**{t['sec_char']}**")
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    # 疼痛特征
     pain_desc = st.multiselect(t['lbl_desc'], ["Sharp (刺痛)", "Dull (酸痛)", "Stiff (僵硬)", "Numb (麻木)"])
     pain_level = st.slider(t['lbl_level'], 0, 10, 5)
     
-    st.markdown("---")
-    
-    # Section 4
-    st.markdown(f"**{t['sec_life']}**")
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    # 生活习惯
     activity = st.selectbox(t['lbl_job'], ["Desk Job (办公)", "Standing (久站)", "Labor (体力)", "Athlete (运动)"])
     sitting = st.select_slider(t['lbl_sit'], options=["<2h", "2-4h", "4-8h", "8h+"])
     
-    st.markdown("---")
-    
-    # Section 5
-    st.markdown(f"**{t['sec_goal']}**")
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    # 目标
     goals = st.multiselect(t['lbl_goal'], ["Pain Relief (止痛)", "Relax (放松)", "Sleep (助眠)", "Tissue (松解)"])
     notes = st.text_area(t['lbl_note'])
     
     st.markdown("<br>", unsafe_allow_html=True)
-    # 提交按钮
-    submitted = st.form_submit_button(t['btn_submit'])
+    
+    # 提交按钮 - 这里是 Submit / 送出
+    # type="primary" 会调用上面定义的红色大按钮样式
+    submitted = st.form_submit_button(t['btn_submit'], type="primary")
 
-# --- 5. 结果生成 ---
+# --- 5. 后台系统处理逻辑 ---
 if submitted:
     if not name or not pain_area:
-        st.error(t['err'])
+        st.error("⚠️ Incomplete Information / 信息不完整")
     else:
+        # 这里模拟数据发送到后台
         with st.spinner(t['loading']):
-            # Prompt 逻辑
-            area_str = ", ".join(pain_area)
-            desc_str = ", ".join(pain_desc)
-            goals_str = ", ".join(goals)
             
+            # 1. 整理数据包 (Payload)
+            client_data = f"""
+            Name: {name} | Email: {email}
+            Pain: {', '.join(pain_area)} ({pain_side})
+            Level: {pain_level}/10 | Type: {', '.join(pain_desc)}
+            History: {duration}
+            Lifestyle: {activity}, Sit {sitting}
+            Goal: {', '.join(goals)}
+            Note: {notes}
+            """
+            
+            # 2. 调用 AI 内核 (模拟后台分析)
             prompt = f"""
-            Role: Senior Therapist AI for 'Massage Philosophy (易经)'.
-            Input: Name:{name}, Pain:{area_str}({pain_side}), Dur:{duration}, Lvl:{pain_level}, Feel:{desc_str}, Job:{activity}, Sit:{sitting}, Goal:{goals_str}.
+            Role: Massage Philosophy AI Backend System.
+            Task: Analyze this intake form and generate a Clinical Plan.
             
-            Task: Create a Bilingual Report.
+            Data: {client_data}
             
-            Output Format:
-            
-            ---
-            (PART 1: ENGLISH - For Therapist)
-            # Massage Philosophy - Assessment
-            **Client:** {name} | **Date:** {datetime.now().strftime('%Y-%m-%d')}
-            **Condition:** {pain_level}/10 pain in {area_str}. Likely caused by {activity}.
-            **Plan:** Recommend 60/90 mins. Focus on {area_str}. Technique: Deep Tissue/Heat.
-            **Home Care:** 1 stretch advice.
-            
-            ---
-            (PART 2: CHINESE - For Client)
-            # 易经理疗 - 诊断简报
-            **客户:** {name}
-            **分析:** 您的{area_str}疼痛（{pain_level}级）主要与您【{activity}】的生活习惯有关。
-            **方案:** 建议进行深层理疗。
-            **建议:** 居家热敷患处。
-            
-            ---
-            **Disclaimer:** Wellness reference only. Not medical advice.
-            免责声明：仅供理疗参考，非医疗诊断。
+            Output:
+            Generate a concise, professional report structured as:
+            1. [Admin Summary] (For Reception/Therapist)
+               - Risk Factors: (e.g. Sedentary)
+               - Recommended Session: 60/90min
+            2. [Client Handout] (Bilingual)
+               - Explain why it hurts.
+               - Treatment Plan.
             """
             
             try:
                 response = model.generate_content(prompt)
+                
+                # 3. 显示结果 (这就相当于前台看到的后台反馈)
                 st.success(t['success'])
+                st.markdown("---")
+                st.markdown(f"### 🖥️ {t['result_title']}")
                 
                 st.markdown("""
-                <div style="background-color:white; padding:20px; border-radius:10px; border:1px solid #ddd; box-shadow:0 2px 10px rgba(0,0,0,0.1);">
+                <div style="background-color:white; padding:20px; border-left:5px solid #9e2a2b; box-shadow:0 2px 5px rgba(0,0,0,0.1);">
                 """, unsafe_allow_html=True)
                 st.markdown(response.text)
                 st.markdown("</div>", unsafe_allow_html=True)
+                
+                st.caption("System ID: MP-2024-" + str(datetime.now().strftime("%H%M%S")))
+                
             except Exception as e:
-                st.error(f"Error: {e}")
+                st.error(f"System Error: {e}")
