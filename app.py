@@ -126,14 +126,14 @@ st.markdown("""
         background-color: #9e2a2b !important;
         color: white !important;
         border: none !important;
-        width: 100% !important; 
+        width: 400% !important; 
         height: 150px !important; 
         font-size: 32px !important;
         font-family: 'Lato', sans-serif !important;
         font-weight: 800 !important;
         letter-spacing: 3px;
         text-transform: uppercase;
-        border-radius: 8px !important;
+        border-radius: 12px !important;
         margin-top: 20px !important;
         box-shadow: none !important;
     }
@@ -367,3 +367,4 @@ else:
     with col_reset_M:
         if st.button(t['btn_new'], type="primary"):
             reset_app()
+
