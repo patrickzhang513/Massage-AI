@@ -28,17 +28,31 @@ st.markdown("""
     }
 
     /* ============================
-       3. 标题与标签颜色
+       3. 标题与标签 (拆分版)
        ============================ */
+    
+    /* (A) 这里的代码只控制：输入框上方的标题 (如：客户姓名、电子邮箱...) */
     .stTextInput label, .stSelectbox label, .stMultiSelect label, 
     .stTextArea label, .stCheckbox label, 
-    div[data-testid="stSlider"] label,
-    div[data-testid="stSlider"] p,
-    h1, h2, h3, h4, h5, h6 { 
+    div[data-testid="stSlider"] label { 
         color: #2c1e1c !important;
         font-family: 'Noto Sans SC', sans-serif !important;
         font-weight: 700 !important;
-        font-size: 35px !important;
+        
+        /* 👇 修改这里：调整栏位标题的大小 */
+        font-size: 25px !important;  
+    }
+
+    /* (B) 这里的代码只控制：页面大标题 (如：### Client Intake Form) */
+    h1, h2, h3, h4, h5, h6 {
+        color: #2c1e1c !important;
+        font-family: 'Noto Sans SC', sans-serif !important;
+        font-weight: 700 !important;
+        
+        /* 👇 修改这里：调整页面大标题的大小 */
+        font-size: 40px !important; 
+        margin-top: 10px !important;
+        margin-bottom: 10px !important;
     }
 
     /* === 核心修复 A：输入框样式 === */
@@ -369,6 +383,7 @@ else:
     with col_reset_M:
         if st.button(t['btn_new'], type="primary"):
             reset_app()
+
 
 
 
