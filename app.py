@@ -37,17 +37,43 @@ st.markdown("""
         font-family: 'Lato', sans-serif !important;
     }
 
-    /* 3. 深度修复输入框 (多选框变黑、白色长方形问题) */
+    /* --- 强力修复开始：强制所有输入框变白 --- */
     
-    /* 强制所有输入容器背景为白 */
-    .stMultiSelect div[data-baseweb="select"], 
-    .stSelectbox div[data-baseweb="select"],
-    div[data-baseweb="input"] {
-        background-color: #ffffff !important;
+    /* 1. 针对最底层的输入元素 (input, textarea) */
+    input, textarea, select {
+        background-color: #ffffff !important; /* 强制纯白背景 */
+        color: #000000 !important; /* 强制纯黑文字 */
+        -webkit-text-fill-color: #000000 !important; /* 修复部分浏览器文字颜色 */
         border-radius: 6px !important;
         border: 2px solid #d1d1d1 !important;
-        color: #333 !important;
     }
+
+    /* 2. 针对 Streamlit 包装容器 (下拉框、多选框的外壳) */
+    .stMultiSelect div[data-baseweb="select"] > div,
+    .stSelectbox div[data-baseweb="select"] > div,
+    div[data-baseweb="input"] > div {
+         background-color: #ffffff !important;
+         color: #000000 !important;
+         border-radius: 6px !important;
+         border: 2px solid #d1d1d1 !important;
+    }
+
+    /* 3. 修复浏览器自动填充表单时出现的黄色/蓝色背景 */
+    input:-webkit-autofill,
+    input:-webkit-autofill:hover, 
+    input:-webkit-autofill:focus, 
+    textarea:-webkit-autofill,
+    textarea:-webkit-autofill:hover,
+    textarea:-webkit-autofill:focus,
+    select:-webkit-autofill,
+    select:-webkit-autofill:hover,
+    select:-webkit-autofill:focus {
+      -webkit-text-fill-color: #000000 !important;
+      -webkit-box-shadow: 0 0 0px 1000px #ffffff inset !important;
+      transition: background-color 5000s ease-in-out 0s !important;
+    }
+    /* --- 强力修复结束 --- */
+    
     
     /* 消除内部的"深色"和"白色长方形" */
     .stMultiSelect div[data-baseweb="select"] > div,
@@ -347,3 +373,4 @@ else:
     with col_reset_M:
         if st.button(t['btn_new'], type="primary"):
             reset_app()
+
