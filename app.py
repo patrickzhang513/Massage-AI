@@ -6,52 +6,46 @@ from datetime import datetime
 st.set_page_config(
     page_title="Massage Philosophy Intake",
     page_icon="🌿",
-    layout="centered", # 居中布局，适配手机和电脑
+    layout="centered",
     initial_sidebar_state="collapsed"
 )
 
 # --- 2. 视觉优化 (CSS 魔法) ---
 st.markdown("""
     <style>
-    /* 全局背景色 - 米白色 (护眼专业) */
+    /* 全局背景色 - 米白色 */
     .stApp {
         background-color: #fcfbf9;
         color: #000000 !important;
     }
 
     /* --- 字体层级调整 --- */
-    
-    /* 1. 问题标题 (Label) - 放大、加粗 */
+    /* 问题标题 (Label) - 放大、加粗、深褐色 */
     .stTextInput label, .stSelectbox label, .stMultiSelect label, .stSlider label, .stRadio label, .stTextArea label {
-        color: #2c1e1c !important; /* 深褐色，比纯黑更有质感 */
-        font-size: 1.3rem !important; /* 约 21px，非常清晰 */
+        color: #2c1e1c !important;
+        font-size: 1.3rem !important; /* 约 21px */
         font-weight: 700 !important;
         margin-bottom: 8px !important;
     }
     
-    /* 2. 选项文字/正文 - 正常大小 */
+    /* 选项文字/正文 - 正常大小 */
     .stRadio div, .stMultiSelect div, p, .stSelectbox div {
         color: #000000 !important;
-        font-size: 1rem !important; /* 16px */
+        font-size: 1rem !important;
     }
 
-    /* --- 3. 彻底修复输入框背景色 (改为浅色) --- */
-    
-    /* 输入框本体 */
+    /* --- 输入框背景色修复 (改为浅色) --- */
     input, textarea {
         background-color: #ffffff !important;
         color: #000000 !important;
         border: 1px solid #d0d0d0 !important;
     }
-    
-    /* 下拉菜单的选择框 */
     div[data-baseweb="select"] > div {
-        background-color: #f0f2f6 !important; /* 浅灰色背景 */
+        background-color: #f0f2f6 !important;
         color: #000000 !important;
         border-color: #d0d0d0 !important;
     }
-    
-    /* 下拉菜单弹出后的选项列表 (关键修复：防止深色干扰) */
+    /* 下拉菜单弹出层 */
     ul[data-testid="stSelectboxVirtualDropdown"] {
         background-color: #ffffff !important;
     }
@@ -59,39 +53,46 @@ st.markdown("""
         color: #000000 !important;
     }
 
-    /* --- 4. 按钮样式优化 --- */
+    /* --- 按钮样式区分 (关键修改) --- */
     
-    /* 提交按钮 (大、红、醒目) */
-    div.stButton > button[kind="primary"] {
-        background-color: #9e2a2b;
-        color: white !important;
-        border: none;
-        padding: 15px 0px;
-        width: 100%;
-        font-size: 20px !important;
-        font-weight: bold !important;
-        border-radius: 8px;
-        margin-top: 20px;
+    /* 1. 语言切换按钮 (普通的 st.button) - 极简风格 */
+    div.stButton > button {
+        background-color: transparent !important;
+        color: #888888 !important;
+        border: 1px solid #e0e0e0 !important;
+        font-size: 14px !important;
+        padding: 5px 15px !important;
+        height: auto !important;
+        width: auto !important;
+        margin-top: 10px;
     }
-    div.stButton > button[kind="primary"]:hover {
-        background-color: #7f1d1d;
+    div.stButton > button:hover {
+        border-color: #9e2a2b !important;
+        color: #9e2a2b !important;
     }
 
-    /* 语言切换按钮 (极小、透明、不抢戏) */
-    div.stButton > button[kind="secondary"] {
-        background-color: transparent;
-        color: #666666 !important;
-        border: 1px solid #ddd;
-        font-size: 12px !important;
-        padding: 2px 10px;
-        height: auto;
+    /* 2. 提交按钮 (表单里的 st.form_submit_button) - 易经红、大尺寸 */
+    div.stFormSubmitButton > button {
+        background-color: #9e2a2b !important;
+        color: white !important;
+        border: none !important;
+        padding: 15px 0px !important;
+        width: 100% !important;
+        font-size: 20px !important;
+        font-weight: bold !important;
+        border-radius: 8px !important;
+        margin-top: 20px !important;
+    }
+    div.stFormSubmitButton > button:hover {
+        background-color: #7f1d1d !important;
+        color: white !important;
     }
     </style>
 """, unsafe_allow_html=True)
 
 # --- 3. 语言状态管理 ---
 if 'language' not in st.session_state:
-    st.session_state.language = 'en' # 默认英文
+    st.session_state.language = 'en'
 
 def toggle_language():
     if st.session_state.language == 'en':
@@ -99,10 +100,9 @@ def toggle_language():
     else:
         st.session_state.language = 'en'
 
-# 词典
 trans = {
     'en': {
-        'lang_btn': '中文', # 按钮上显示“去中文”
+        'lang_btn': '中文',
         'title': 'Client Intake Form',
         'subtitle': 'Estimated time: 2 mins',
         'lbl_name': 'Client Name',
@@ -116,13 +116,13 @@ trans = {
         'lbl_sit': 'Sitting hours per day',
         'lbl_goal': 'Goal for today',
         'lbl_note': 'Any Notes?',
-        'btn_submit': 'Submit / 送出', # 您的要求
+        'btn_submit': 'Submit / 送出',
         'loading': 'Sending data to AI system...',
         'success': 'Successfully Submitted!',
         'result_title': 'System Analysis Result'
     },
     'zh': {
-        'lang_btn': 'English', # 按钮上显示“Go English”
+        'lang_btn': 'English',
         'title': '客户健康评估表',
         'subtitle': '预计填写时间：2分钟',
         'lbl_name': '客户姓名',
@@ -156,17 +156,16 @@ except:
 
 # --- 4. 界面布局 ---
 
-# 顶部：Logo (大) + 语言按钮 (小)
 col_logo, col_btn = st.columns([4, 1])
 with col_logo:
     try:
-        # width=300 放大Logo
         st.image("logo.png", width=300)
     except:
         st.markdown("## Massage Philosophy")
 with col_btn:
-    # 这是一个小的次要按钮 (secondary)
-    if st.button(t['lang_btn'], kind="secondary"):
+    # 修复点：移除了 kind="secondary"，改为默认
+    # CSS 会自动识别这是普通按钮，应用小尺寸样式
+    if st.button(t['lang_btn']): 
         toggle_language()
         st.rerun()
 
@@ -177,13 +176,11 @@ st.markdown("---")
 # 表单区域
 with st.form("main_form"):
     
-    # 基础信息
     name = st.text_input(t['lbl_name'])
     email = st.text_input(t['lbl_email'])
     
-    st.markdown("<br>", unsafe_allow_html=True) # 增加间距
+    st.markdown("<br>", unsafe_allow_html=True)
     
-    # 疼痛详情
     pain_area = st.multiselect(
         t['lbl_area'],
         ["Neck (颈)", "Shoulders (肩)", "Upper Back (上背)", "Lower Back (下腰)", 
@@ -198,37 +195,31 @@ with st.form("main_form"):
         
     st.markdown("<br>", unsafe_allow_html=True)
 
-    # 疼痛特征
     pain_desc = st.multiselect(t['lbl_desc'], ["Sharp (刺痛)", "Dull (酸痛)", "Stiff (僵硬)", "Numb (麻木)"])
     pain_level = st.slider(t['lbl_level'], 0, 10, 5)
     
     st.markdown("<br>", unsafe_allow_html=True)
 
-    # 生活习惯
     activity = st.selectbox(t['lbl_job'], ["Desk Job (办公)", "Standing (久站)", "Labor (体力)", "Athlete (运动)"])
     sitting = st.select_slider(t['lbl_sit'], options=["<2h", "2-4h", "4-8h", "8h+"])
     
     st.markdown("<br>", unsafe_allow_html=True)
 
-    # 目标
     goals = st.multiselect(t['lbl_goal'], ["Pain Relief (止痛)", "Relax (放松)", "Sleep (助眠)", "Tissue (松解)"])
     notes = st.text_area(t['lbl_note'])
     
     st.markdown("<br>", unsafe_allow_html=True)
     
-    # 提交按钮 - 这里是 Submit / 送出
-    # type="primary" 会调用上面定义的红色大按钮样式
-    submitted = st.form_submit_button(t['btn_submit'], type="primary")
+    # 提交按钮
+    # CSS 会自动识别这是 FormSubmitButton，应用红色大尺寸样式
+    submitted = st.form_submit_button(t['btn_submit'])
 
-# --- 5. 后台系统处理逻辑 ---
+# --- 5. 后台处理逻辑 ---
 if submitted:
     if not name or not pain_area:
         st.error("⚠️ Incomplete Information / 信息不完整")
     else:
-        # 这里模拟数据发送到后台
         with st.spinner(t['loading']):
-            
-            # 1. 整理数据包 (Payload)
             client_data = f"""
             Name: {name} | Email: {email}
             Pain: {', '.join(pain_area)} ({pain_side})
@@ -239,13 +230,10 @@ if submitted:
             Note: {notes}
             """
             
-            # 2. 调用 AI 内核 (模拟后台分析)
             prompt = f"""
             Role: Massage Philosophy AI Backend System.
             Task: Analyze this intake form and generate a Clinical Plan.
-            
             Data: {client_data}
-            
             Output:
             Generate a concise, professional report structured as:
             1. [Admin Summary] (For Reception/Therapist)
@@ -259,7 +247,6 @@ if submitted:
             try:
                 response = model.generate_content(prompt)
                 
-                # 3. 显示结果 (这就相当于前台看到的后台反馈)
                 st.success(t['success'])
                 st.markdown("---")
                 st.markdown(f"### 🖥️ {t['result_title']}")
