@@ -108,13 +108,13 @@ st.markdown("""
     }
     div[data-testid="stSlider"] div[data-testid="stMarkdownContainer"] p {
         color: #9e2a2b !important;
-        font-size: 1.2rem !important;
+        font-size: 25px !important;
     }
 
     /* 5. 勾选框文字 */
     .stCheckbox label p {
         color: #333333 !important;
-        font-size: 1.2rem !important;
+        font-size: 25px !important;
         font-weight: 700 !important;
         display: inline !important;
     }
@@ -130,7 +130,7 @@ st.markdown("""
         height: 150px !important; 
         /* ------------------ */
         
-        font-size: 32px !important;
+        font-size: 35px !important;
         font-family: 'Noto Sans SC', sans-serif !important;
         font-weight: 800 !important;
         letter-spacing: 3px;
@@ -369,6 +369,7 @@ else:
     with col_reset_M:
         if st.button(t['btn_new'], type="primary"):
             reset_app()
+
 
 
 
