@@ -126,11 +126,11 @@ st.markdown("""
         border: none !important;
         
         /* --- 您的定制尺寸 --- */
-        width: 400% !important;   /* 维持您的要求 */
+        width: 600% !important;   /* 维持您的要求 */
         height: 150px !important; 
         /* ------------------ */
         
-        font-size: 35px !important;
+        font-size: 50px !important;
         font-family: 'Noto Sans SC', sans-serif !important;
         font-weight: 800 !important;
         letter-spacing: 3px;
@@ -369,6 +369,7 @@ else:
     with col_reset_M:
         if st.button(t['btn_new'], type="primary"):
             reset_app()
+
 
 
 
