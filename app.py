@@ -38,6 +38,7 @@ st.markdown("""
         color: #2c1e1c !important;
         font-family: 'Noto Sans SC', sans-serif !important;
         font-weight: 700 !important;
+        font-size: 35px !important;
     }
 
     /* === 核心修复 A：输入框样式 === */
@@ -368,3 +369,4 @@ else:
     with col_reset_M:
         if st.button(t['btn_new'], type="primary"):
             reset_app()
+
