@@ -107,7 +107,7 @@ st.markdown("""
         box-shadow: 0 0 5px rgba(0,0,0,0.2) !important;
     }
     div[data-testid="stSlider"] div[data-testid="stMarkdownContainer"] p {
-        color: #9e2a2b !important;
+        color: #2c1e1c !important;
         font-size: 25px !important;
     }
 
@@ -369,6 +369,7 @@ else:
     with col_reset_M:
         if st.button(t['btn_new'], type="primary"):
             reset_app()
+
 
 
 
